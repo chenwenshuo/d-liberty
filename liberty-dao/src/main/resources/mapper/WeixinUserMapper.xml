@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.liberty.mapper.WeixinUserMapper">
+  <resultMap id="BaseResultMap" type="com.dliberty.liberty.entity.WeixinUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="head_img" jdbcType="VARCHAR" property="headImg" />
+    <result column="open_id" jdbcType="VARCHAR" property="openId" />
+    <result column="union_id" jdbcType="VARCHAR" property="unionId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="remind_hour" jdbcType="INTEGER" property="remindHour" />
+    <result column="remind_minute" jdbcType="INTEGER" property="remindMinute" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from weixin_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dliberty.liberty.entity.WeixinUser">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into weixin_user (user_name, head_img, open_id, 
+      union_id, create_time, update_time,email,remind_hour,remind_minute
+      )
+    values (#{userName,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, #{openId,jdbcType=VARCHAR}, 
+      #{unionId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{email,jdbcType=VARCHAR},#{remindHour,jdbcType=INTEGER},#{remindMinute,jdbcType=INTEGER}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.dliberty.liberty.entity.WeixinUser">
+    update weixin_user
+    set user_name = #{userName,jdbcType=VARCHAR},
+      head_img = #{headImg,jdbcType=VARCHAR},
+      open_id = #{openId,jdbcType=VARCHAR},
+      union_id = #{unionId,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      email = #{email,jdbcType=VARCHAR},
+      remind_hour = #{remindHour,jdbcType=INTEGER},
+      remind_minute = #{remindMinute,jdbcType=INTEGER}
+      
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, user_name, head_img, open_id, union_id, create_time, update_time,email,remind_hour,remind_minute
+    from weixin_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, user_name, head_img, open_id, union_id, create_time, update_time,email,remind_hour,remind_minute
+    from weixin_user
+  </select>
+  
+  <select id="selectByOpenId" resultMap="BaseResultMap">
+    select id, user_name, head_img, open_id, union_id, create_time, update_time,email,remind_hour,remind_minute
+    from weixin_user
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectEmail" resultMap="BaseResultMap">
+    select id, user_name, head_img, open_id, union_id, create_time, update_time,email,remind_hour,remind_minute
+    from weixin_user where email is not null
+  </select>
+  
+  <select id="selectRemind" resultMap="BaseResultMap">
+    select id, user_name, head_img, open_id, union_id, create_time, update_time,email,remind_hour,remind_minute
+    from weixin_user where 
+    remind_hour = #{remindHour,jdbcType=INTEGER}
+    and remind_minute = #{remindMinute,jdbcType=INTEGER}
+  </select>
+</mapper>

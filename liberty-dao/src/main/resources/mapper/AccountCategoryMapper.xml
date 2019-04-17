@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.liberty.mapper.AccountCategoryMapper">
+  <resultMap id="BaseResultMap" type="com.dliberty.liberty.entity.AccountCategory">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cate_code" jdbcType="VARCHAR" property="cateCode" />
+    <result column="cate_name" jdbcType="VARCHAR" property="cateName" />
+    <result column="cate_user_id" jdbcType="INTEGER" property="cateUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="is_deleted" jdbcType="CHAR" property="isDeleted" />
+    <result column="cate_type" jdbcType="CHAR" property="cateType" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from account_category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dliberty.liberty.entity.AccountCategory">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into account_category (cate_code, cate_name, cate_user_id, 
+      create_time, update_time, is_deleted, 
+      cate_type)
+    values (#{cateCode,jdbcType=VARCHAR}, #{cateName,jdbcType=VARCHAR}, #{cateUserId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=CHAR}, 
+      #{cateType,jdbcType=CHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.dliberty.liberty.entity.AccountCategory">
+    update account_category
+    set cate_code = #{cateCode,jdbcType=VARCHAR},
+      cate_name = #{cateName,jdbcType=VARCHAR},
+      cate_user_id = #{cateUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=CHAR},
+      cate_type = #{cateType,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, cate_code, cate_name, cate_user_id, create_time, update_time, is_deleted, 
+    cate_type
+    from account_category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, cate_code, cate_name, cate_user_id, create_time, update_time, is_deleted, 
+    cate_type
+    from account_category
+  </select>
+  
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    select id, cate_code, cate_name, cate_user_id, create_time, update_time, is_deleted
+    from account_category where is_deleted = '0' and cate_user_id = #{userId,jdbcType=INTEGER}
+    and cate_type = #{cateType,jdbcType=CHAR}
+  </select>
+  
+  <select id="selectByCateName" resultType="java.lang.Integer">
+    select count(1)
+    from account_category where is_deleted = '0' and cate_user_id = #{userId,jdbcType=INTEGER}
+    and cate_type = #{cateType,jdbcType=CHAR} and cate_name = #{cateName,jdbcType=VARCHAR}
+  </select>
+</mapper>

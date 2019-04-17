@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <!-- jdbc连接信息 -->
+        <commentGenerator><property name="suppressAllComments" value="true" /></commentGenerator>
+
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/mpb_mtbox?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=true&amp;verifyServerCertificate=false" userId="lrvrd173_u1" password="lrspwd-mtbox-db123" />
+
+        <!-- 生成vo对象 -->
+        <javaModelGenerator targetPackage="com.dliberty.liberty.entity" targetProject="./temp"/>
+        <!-- 生成用于查询的Example对象 -->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./temp" />
+        <!-- 生成DAO的类文件以及配置文件 -->
+        <javaClientGenerator targetPackage="com.dliberty.liberty.mapper" targetProject="./temp" type="XMLMAPPER" />
+        <!-- 想要生成的数据库表,自动化工具会根据该表的结构生成相应的vo对象-->
+
+
+        <table tableName="account_budget" domainObjectName="AccountBudget" enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" >
+            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+        </table>
+
+    </context>
+</generatorConfiguration>

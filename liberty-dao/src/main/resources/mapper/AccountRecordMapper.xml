@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dliberty.liberty.mapper.AccountRecordMapper">
+  <resultMap id="BaseResultMap" type="com.dliberty.liberty.entity.AccountRecord">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cate_id" jdbcType="INTEGER" property="cateId" />
+    <result column="cate_type" jdbcType="CHAR" property="cateType" />
+    <result column="cate_name" jdbcType="VARCHAR" property="cateName" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="account_money" jdbcType="INTEGER" property="accountMoney" />
+    <result column="account_time" jdbcType="TIMESTAMP" property="accountTime" />
+    <result column="account_remarks" jdbcType="VARCHAR" property="accountRemarks" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="deleted" jdbcType="CHAR" property="deleted" />
+    <result column="form_id" jdbcType="VARCHAR" property="formId" />
+    <result column="form_id_expire" jdbcType="CHAR" property="formIdExpire" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from account_record
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dliberty.liberty.entity.AccountRecord">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into account_record (cate_id, cate_type, cate_name, 
+      user_id, account_money, account_time, 
+      account_remarks, create_time, update_time,deleted,form_id,form_id_expire
+      )
+    values (#{cateId,jdbcType=INTEGER}, #{cateType,jdbcType=CHAR}, #{cateName,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=INTEGER}, #{accountMoney,jdbcType=INTEGER}, #{accountTime,jdbcType=TIMESTAMP}, 
+      #{accountRemarks,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+      #{deleted,jdbcType=CHAR},#{formId,jdbcType=VARCHAR},#{formIdExpire,jdbcType=CHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.dliberty.liberty.entity.AccountRecord">
+    update account_record
+    set cate_id = #{cateId,jdbcType=INTEGER},
+      cate_type = #{cateType,jdbcType=CHAR},
+      cate_name = #{cateName,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=INTEGER},
+      account_money = #{accountMoney,jdbcType=INTEGER},
+      account_time = #{accountTime,jdbcType=TIMESTAMP},
+      account_remarks = #{accountRemarks,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      deleted = #{deleted,jdbcType=CHAR},
+      form_id = #{formId,jdbcType=VARCHAR},
+      form_id_expire = #{formIdExpire,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, cate_id, cate_type, cate_name, user_id, account_money, account_time, account_remarks, 
+    create_time, update_time,form_id,form_id_expire
+    from account_record
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, cate_id, cate_type, cate_name, user_id, account_money, account_time, account_remarks, 
+    create_time, update_time,form_id,form_id_expire
+    from account_record where deleted = '0'
+  </select>
+  
+   <select id="selectByUserId" resultMap="BaseResultMap">
+    select id, cate_id, cate_type, cate_name, user_id, account_money, account_time, account_remarks, 
+    create_time, update_time,form_id,form_id_expire
+    from account_record where user_id = #{userId,jdbcType=INTEGER} and cate_type = #{cateType,jdbcType=CHAR} and deleted = '0'
+  </select>
+  
+  <select id="findMoneyByDay" resultType="java.lang.Integer">
+  	SELECT
+  		 IFNULL(SUM(account_money),0)
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+   	<if test="year != null">and  year(account_time) = #{year} </if>
+   	<if test="month != null">and MONTH(account_time) = #{month} </if>
+   	<if test="day != null">and DAY(account_time) = #{day} </if>
+   	
+  </select>
+  
+   <select id="findAccountDate" resultType="java.util.Date">
+  	SELECT
+  		DISTINCT account_time
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and deleted = '0'
+   	<if test="year != null">and  year(account_time) = #{year} </if>
+   	<if test="month != null">and MONTH(account_time) = #{month} </if>
+   	order by account_time desc
+   	
+  </select>
+  
+  <select id="findByDate" resultMap="BaseResultMap">
+    select id, cate_id, cate_type, cate_name, user_id, account_money, account_time, account_remarks, 
+    create_time, update_time,SUBSTR(cate_name FROM 1 FOR 1) as firstName
+    from account_record where user_id = #{userId,jdbcType=INTEGER} and account_time = #{accountTime,jdbcType=TIMESTAMP} and deleted = '0' order by id desc
+  </select>
+  
+  <select id="findReportExt" resultType="com.dliberty.liberty.entity.ext.ReportExtVo">
+  	SELECT
+  		 cate_name name,IFNULL(SUM(account_money),0) data
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+   	<if test="year != null">and  year(account_time) = #{year} </if>
+   	<if test="month != null">and MONTH(account_time) = #{month} </if>
+   	<if test="day != null">and DAY(account_time) = #{day} </if>
+   	group by cate_name
+  </select>
+  
+   <select id="findAccountMax" resultMap="BaseResultMap">
+  	SELECT
+  		*
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+   	<if test="year != null">and  year(account_time) = #{year} </if>
+   	<if test="month != null">and MONTH(account_time) = #{month} </if>
+   	order by account_money desc limit #{num}
+  </select>
+  
+  <select id="reportList" resultMap="BaseResultMap">
+  	SELECT
+  		*,SUBSTR(cate_name FROM 1 FOR 1) as firstName
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+    and	cate_name = #{cateName,jdbcType=VARCHAR}
+   	<if test="year != null">and  year(account_time) = #{year} </if>
+   	<if test="month != null">and MONTH(account_time) = #{month} </if>
+   	order by id desc
+  </select>
+  
+  <select id="reportListDate" resultMap="BaseResultMap">
+  	SELECT
+  		*,SUBSTR(cate_name FROM 1 FOR 1) as firstName
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+    and	cate_name = #{cateName,jdbcType=VARCHAR}
+   	and account_time &gt;= #{beginTime}
+   	and account_time &lt;= #{endTime}
+   	order by id desc
+  </select>
+  
+  <select id="findFormIdExpire" resultMap="BaseResultMap">
+  	SELECT
+  		*
+   from 
+   		account_record 
+   where form_id_expire = '0' or form_id_expire is null
+  </select>
+  
+  <select id="findFormId" resultMap="BaseResultMap">
+  	SELECT
+  		*
+   from 
+   		account_record 
+   where form_id_expire = '0'
+   and user_id = #{userId,jdbcType=INTEGER}
+   order by id asc limit 1
+  </select>
+  
+  <select id="findLastRecord" resultMap="BaseResultMap">
+  	SELECT
+  		*
+   from 
+   		account_record 
+   where user_id = #{userId,jdbcType=INTEGER}
+   and deleted = '0'
+   order by id desc limit 1
+  </select>
+  
+  <select id="findMoneyByDate" resultType="java.lang.Integer">
+  	SELECT
+  		 IFNULL(SUM(account_money),0)
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+   	and account_time &gt;= #{beginTime}
+   	and account_time &lt;= #{endTime}
+   	
+  </select>
+  
+   <select id="findReportExtByDate" resultType="com.dliberty.liberty.entity.ext.ReportExtVo">
+  	SELECT
+  		 cate_name name,IFNULL(SUM(account_money),0) data
+   from 
+   		account_record 
+   	where user_id = #{userId,jdbcType=INTEGER}
+   	and	cate_type = #{cateType,jdbcType=CHAR}
+   	and deleted = '0'
+   	and account_time &gt;= #{beginTime}
+   	and account_time &lt;= #{endTime}
+   	group by cate_name
+  </select>
+  
+</mapper>

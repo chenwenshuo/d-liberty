@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="liberty-web:war">
+    <output-path>$PROJECT_DIR$/liberty-web/target</output-path>
+    <root id="archive" name="liberty-web.war">
+      <element id="artifact" artifact-name="liberty-web:war exploded" />
+    </root>
+  </artifact>
+</component>

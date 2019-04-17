@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="liberty-common" />
+        <module name="liberty-dao" />
+        <module name="liberty-redis" />
+        <module name="liberty-service" />
+        <module name="liberty-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="d-liberty" target="1.8" />
+      <module name="liberty-common" target="1.8" />
+      <module name="liberty-dao" target="1.8" />
+      <module name="liberty-redis" target="1.8" />
+      <module name="liberty-service" target="1.8" />
+      <module name="liberty-web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
